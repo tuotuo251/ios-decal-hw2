@@ -26,13 +26,24 @@ extension Double {
     
     // TODO: Make the string human readable!
     var prettyOutput: String {
-        /* SPECS:
+            /* SPECS:
             1. Returns a max of 7 characters (including any decimal point / negative sign).
             2. Do not include any leading zeros or trailing zeros.
             3. Display an integer when the result is an integer of allowable size.
             Optional: Use scientific notation for any values that exceed the character max.
         */
-        return "\(self)"
+        if self == 0 {
+            return "0"
+        }
+        else if abs(self) <= 0.0001 || abs(self) >= 10000 || String(self).characters.count > 7{
+            return self.scientificStyle
+        }
+        else if self == floor(self) {
+            return String(Int(floor(self)))
+        }
+        else {
+            return String(format: "%g", self)
+        }
     }
 }
 

@@ -21,8 +21,7 @@ class ViewController: UIViewController {
     
     // TODO: This looks like a good place to add some data structures.
     //       One data structure is initialized below for reference.
-    var someDataStructure: [String] = [""]
-    
+    var lol: [String] = ["", "", ""]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,52 +44,155 @@ class ViewController: UIViewController {
     
     // TODO: A method to update your data structure(s) would be nice.
     //       Modify this one or create your own.
-    func updateSomeDataStructure(_ content: String) {
-        print("Update me like one of those PCs")
+    func updatelol(_ result: String) {
+        lol = [result, "", ""]
     }
     
     // TODO: Ensure that resultLabel gets updated.
     //       Modify this one or create your own.
-    func updateResultLabel(_ content: String) {
-        print("Update me like one of those PCs")
+    func updateResultLabel(_ result: Double) {
+        simpleupdate(result.prettyOutput)
     }
     
-    
-    // TODO: A calculate method with no parameters, scary!
-    //       Modify this one or create your own.
-    func calculate() -> String {
-        return "0"
+    func simpleupdate(_ result: String) {
+        resultLabel.text = result
     }
     
     // TODO: A simple calculate method for integers.
     //       Modify this one or create your own.
-    func intCalculate(a: Int, b:Int, operation: String) -> Int {
-        print("Calculation requested for \(a) \(operation) \(b)")
-        return 0
+    func intCalculate(a: String, b:String, operation: String) -> Int {
+        let a = Int(a)!
+        let b = Int(b)!
+        switch operation {
+        case "+":
+            return a + b
+        case "-":
+            return a - b
+        case "*":
+            return a * b
+        case "/":
+            return a / b
+        default:
+            return 0
+        }
     }
     
     // TODO: A general calculate method for doubles
     //       Modify this one or create your own.
     func calculate(a: String, b:String, operation: String) -> Double {
-        print("Calculation requested for \(a) \(operation) \(b)")
-        return 0.0
+        let a = Double(a)!
+        let b = Double(b)!
+        switch operation {
+        case "+":
+            return a + b
+        case "-":
+            return a - b
+        case "*":
+            return a * b
+        case "/":
+            return a / b
+        default:
+            return a
+        }
     }
     
     // REQUIRED: The responder to a number button being pressed.
     func numberPressed(_ sender: CustomButton) {
         guard Int(sender.content) != nil else { return }
-        print("The number \(sender.content) was pressed")
-        // Fill me in!
+        if lol[1] == "" && lol[0].characters.count < 7{
+            lol[0] = lol[0] + sender.content
+            resultLabel.text = lol[0]
+        }
+        else if lol[1] != "" && lol[2].characters.count < 7{
+            lol[2] = lol[2] + sender.content
+            resultLabel.text = lol[2]
+        }
     }
-    
+
     // REQUIRED: The responder to an operator button being pressed.
     func operatorPressed(_ sender: CustomButton) {
-        // Fill me in!
+        let s = sender.content
+        switch s {
+        case "+", "-", "*", "/":
+            if lol[2] == "" {
+                lol[1] = s
+            }
+            else {
+                let result = calculate(a: lol[0], b: lol[2], operation: lol[1])
+                updateResultLabel(result)
+                updatelol(String(result))
+                lol[1] = s
+            }
+        case "=":
+            if lol[2] != "" {
+                let result = calculate(a: lol[0], b: lol[2], operation: lol[1])
+                updateResultLabel(result)
+                updatelol(result.prettyOutput)
+            }
+        case "+/-":
+            if lol[1] == "" {
+                if lol[0].contains("-"){
+                    lol[0].remove(at: lol[0].startIndex)
+                    simpleupdate(lol[0])
+                }
+                else if lol[0].characters.count < 7{
+                    lol[0] = "-" + lol[0]
+                    simpleupdate(lol[0])
+                }
+            }
+            else {
+                if lol[2].contains("-") {
+                    lol[2].remove(at: lol[2].startIndex)
+                    simpleupdate(lol[2])
+                }
+                else if lol[2].characters.count < 6{
+                    lol[2] = "-" + lol[2]
+                    simpleupdate(lol[2])
+                }
+            }
+        case "C":
+            updatelol("")
+            simpleupdate("0")
+        default:
+            return
+        }
+
     }
     
     // REQUIRED: The responder to a number or operator button being pressed.
     func buttonPressed(_ sender: CustomButton) {
-       // Fill me in!
+        if sender.content == "." {
+            if lol[1] == "" && lol[0].contains(".") == false{
+                if lol[0] == "" {
+                    lol[0] = "0."
+                    simpleupdate(lol[0])
+                }
+                else if lol[0].characters.count < 7 {
+                    lol[0].append(".")
+                    simpleupdate(lol[0])
+                }
+            }
+            else if lol[1] != "" && lol[2].contains(".") == false{
+                if lol[2] == "" {
+                    lol[2] = "0."
+                    simpleupdate(lol[2])
+                }
+                else if lol[2].characters.count < 7{
+                    lol[2].append(".")
+                    simpleupdate(lol[2])
+                }
+            }
+        }
+        else if sender.content == "0" {
+            if lol[1] == "" && lol[0].characters.count < 7{
+                lol[0].append(sender.content)
+                simpleupdate(lol[0])
+            }
+            else if lol[1] != "" && lol[2].characters.count < 7 {
+                lol[2].append(sender.content)
+                simpleupdate(lol[2])
+            }
+        }
     }
     
     // IMPORTANT: Do NOT change any of the code below.
